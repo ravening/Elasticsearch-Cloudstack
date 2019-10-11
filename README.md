@@ -87,6 +87,16 @@ mvn package -DskipTests
 java -jar target/cloudstack-elasticsearch-0.0.1.jar
 ```
 
+To build a docker image, run the command
+```bash
+docker build -t cloudstack-elasticsearch .
+```
+
+Run the docker image
+```bash
+docker run -p 5000:8080 cloudstack-elasticsearch
+```
+
 ### Accessing the end points
 
 1 . To search all the logs in the index navigate to 
@@ -94,7 +104,17 @@ java -jar target/cloudstack-elasticsearch-0.0.1.jar
 http://localhost:8080/listall
 ```
 
+If running in docker then navigage to
+```http request
+http://localhost:5000/listall
+```
+
 2 . To search for a log with particular ID, navigate to
+```http request
+http://localhost:8080/<ID>
+```
+
+If running in docker then navigate to
 ```http request
 http://localhost:8080/<ID>
 ```

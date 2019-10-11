@@ -58,8 +58,8 @@ public class ElasticSearchServiceImpl implements ElasticSearchService{
         GetRequest getRequest = new GetRequest(indexName, typeName, id);
         GetResponse getResponse = client.get(getRequest, RequestOptions.DEFAULT);
 
-        return convertStringToLogsObject(getResponse.getSourceAsString());
-//        return convertMapToLogsObject(getResponse.getSource());
+//        return convertStringToLogsObject(getResponse.getSourceAsString());
+        return convertMapToLogsObject(getResponse.getSource());
     }
 
     private SearchRequest buildSearchRequest(String index, String type) {
