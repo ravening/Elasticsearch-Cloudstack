@@ -2,6 +2,7 @@ package com.rakeshv.cloudstackelasticsearch.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rakeshv.cloudstackelasticsearch.model.ElasticConfig;
 import com.rakeshv.cloudstackelasticsearch.model.Logs;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,11 +15,13 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,12 +30,8 @@ public class ElasticSearchServiceImpl implements ElasticSearchService{
     private RestHighLevelClient client;
     private ObjectMapper objectMapper;
 
-    @Value("${elasticsearch.index}")
-    private String indexName;
-    @Value("${elasticsearch.type}")
-    private String typeName;
-    @Value("${elasticsearch.querysize}")
-    private int querySize;
+    @Autowired
+    ElasticConfigServiceImpl elasticConfigService;
 
     @Autowired
     public ElasticSearchServiceImpl(RestHighLevelClient client, ObjectMapper mapper) {
@@ -42,6 +41,10 @@ public class ElasticSearchServiceImpl implements ElasticSearchService{
 
     @Override
     public List<Logs> findAllLogs() throws IOException {
+        ElasticConfig elasticConfig = elasticConfigService.getElasticConfig();
+        String indexName = elasticConfig.getIndexName();
+        String typeName = elasticConfig.getType();
+        int querySize = elasticConfig.getQuerySize();
         SearchRequest searchRequest = buildSearchRequest(indexName, typeName);
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.matchAllQuery());
@@ -55,11 +58,38 @@ public class ElasticSearchServiceImpl implements ElasticSearchService{
 
     @Override
     public Logs findById(String id) throws IOException {
+        ElasticConfig elasticConfig = elasticConfigService.getElasticConfig();
+        String indexName = elasticConfig.getIndexName();
+        String typeName = elasticConfig.getType();
         GetRequest getRequest = new GetRequest(indexName, typeName, id);
         GetResponse getResponse = client.get(getRequest, RequestOptions.DEFAULT);
 
 //        return convertStringToLogsObject(getResponse.getSourceAsString());
         return convertMapToLogsObject(getResponse.getSource());
+    }
+
+    @Override
+    public List<Logs> findByMessageString(String query) throws IOException {
+        ElasticConfig elasticConfig = elasticConfigService.getElasticConfig();
+        String indexName = elasticConfig.getIndexName();
+        String typeName = elasticConfig.getType();
+        int querySize = elasticConfig.getQuerySize();
+        String fieldName = elasticConfig.getFieldName();
+        String sortField = elasticConfig.getSortField();
+        SortOrder sortOrder = elasticConfig.isDescending() ? SortOrder.DESC : SortOrder.ASC;
+
+        SearchRequest searchRequest = buildSearchRequest(indexName, typeName);
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder(fieldName, query);
+        searchSourceBuilder.query(matchQueryBuilder);
+        searchSourceBuilder.size(querySize);
+
+        searchSourceBuilder.sort(new FieldSortBuilder(sortField).order(sortOrder));
+        searchRequest.source(searchSourceBuilder);
+        //searchRequest.scroll(new TimeValue(10, TimeUnit.MINUTES));
+        SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+
+        return getSearchResult(searchResponse);
     }
 
     private SearchRequest buildSearchRequest(String index, String type) {

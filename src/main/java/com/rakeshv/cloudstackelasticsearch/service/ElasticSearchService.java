@@ -7,4 +7,5 @@ import java.util.List;
 public interface ElasticSearchService {
     public List<Logs> findAllLogs() throws IOException;
     public Logs findById(String id) throws IOException;
+    public List<Logs> findByMessageString(String query) throws IOException;
 }
