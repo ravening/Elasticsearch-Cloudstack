@@ -94,29 +94,39 @@ docker build -t cloudstack-elasticsearch .
 
 Run the docker image
 ```bash
-docker run -p 5000:8080 cloudstack-elasticsearch
+docker run -p 5000:9229 cloudstack-elasticsearch
 ```
 
 ### Accessing the end points
 
 1 . To search all the logs in the index navigate to 
 ```http request
-http://localhost:8080/listall
+http://localhost:9229/api/v1/search/listall
 ```
 
 If running in docker then navigage to
 ```http request
-http://localhost:5000/listall
+http://localhost:9229/api/v1/search/listall
 ```
 
 2 . To search for a log with particular ID, navigate to
 ```http request
-http://localhost:8080/<ID>
+http://localhost:9229/api/v1/search/<ID>
 ```
 
 If running in docker then navigate to
 ```http request
-http://localhost:8080/<ID>
+http://localhost:9229/api/v1/search/<ID>
+```
+
+3 . To search for a particular keyword in a message, navigate to
+```http request
+http://localhost:9229/api/v1/search/query/<query string>
+```
+
+4 . To display all indices, navigate to
+```http request
+http://localhost:9229/api/v1/index
 ```
 
 ## Automating the generation of the docker images
