@@ -119,6 +119,52 @@ If running in docker then navigate to
 http://localhost:8080/<ID>
 ```
 
+## Automating the generation of the docker images
+If you want to build and push the docker images to the docker hub automatically\
+then add the below lines to the pom.xml
+
+```bash
+<plugin>
+	<groupId>com.spotify</groupId>
+	<artifactId>dockerfile-maven-plugin</artifactId>
+	<version>1.4.0</version>
+	<configuration>
+		<repository><your dockerhub username>/<repo name></repository>
+		<tag>${project.version}</tag>
+		<buildArgs>
+			<JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+		</buildArgs>
+	</configuration>
+	<executions>
+		<execution>
+			<id>default</id>
+			<phase>install</phase>
+			<goals>
+				<goal>build</goal>
+				<goal>push</goal>
+			</goals>
+		</execution>
+	</executions>
+</plugin>
+```
+
+Now you can build the docker image using
+```bash
+mvn package dockerfile:build
+```
+
+Push the docker image using
+```bash
+mvn dockerfile:push
+```
+
+To do the above two steps automatically, run
+```bash
+mvn install
+```
+
+This will build the packages, creates docker image and uploads it to docker hub
+
 ## Built With
 
 * [Maven](https://maven.apache.org/) - Dependency Management
