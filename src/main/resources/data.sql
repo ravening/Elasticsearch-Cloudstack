@@ -10,4 +10,4 @@ CREATE TABLE elastic_config (
     is_descending int default 1,
 );
 
-INSERT INTO elastic_config (index_name, type) VALUES ('filebeat-2019.10.15', 'doc');
+INSERT INTO elastic_config (index_name, type) VALUES ('monitoring-cloudstack*', 'doc');

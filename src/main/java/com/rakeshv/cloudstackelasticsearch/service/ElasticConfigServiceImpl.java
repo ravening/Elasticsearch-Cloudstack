@@ -30,4 +30,9 @@ public class ElasticConfigServiceImpl implements ElasticConfigService {
         elasticConfigRepository.save(savedElasticConfig);
         return elasticConfig;
     }
+
+    @Override
+    public void saveElasticConfig(ElasticConfig elasticConfig) {
+        elasticConfigRepository.save(elasticConfig);
+    }
 }
