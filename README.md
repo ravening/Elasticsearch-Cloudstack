@@ -22,7 +22,7 @@ It is assumed that elasticsearch is installed and configured on either remote or
 from where we want to fetch the data.
 
 If elasticsearch is not installed then you follow the steps mentioned\
-[here](https://www.digitalocean.com/community/tutorials/how-to-install-elasticsearch-logstash-and-kibana-elastic-stack-on-ubuntu-18-04) 
+[here](https://www.digitalocean.com/community/tutorials/how-to-install-elasticsearch-logstash-and-kibana-elastic-stack-on-ubuntu-18-04)
 
 Once everything is setup, make sure that you can reach the elasticsearch endpoint by making a get request to
 
@@ -49,6 +49,30 @@ curl <IP address of elasticsearch cluster>:9200
 ```
 
 If you dont see the above output then please configure it properly and then continue.
+
+## store some documents in elasticsearch
+```
+curl -XPUT 'http://localhost:9200/twitter/_doc/1?pretty' -H 'Content-Type: application/json' -d '
+{
+    "user": "kimchy",
+    "post_date": "2009-11-15T13:12:00",
+    "message": "Trying out Elasticsearch, so far so good?"
+}'
+
+curl -XPUT 'http://localhost:9200/twitter/_doc/2?pretty' -H 'Content-Type: application/json' -d '
+{
+    "user": "kimchy",
+    "post_date": "2009-11-15T14:12:12",
+    "message": "Another tweet, will it be indexed?"
+}'
+
+curl -XPUT 'http://localhost:9200/twitter/_doc/3?pretty' -H 'Content-Type: application/json' -d '
+{
+    "user": "elastic",
+    "post_date": "2010-01-15T01:46:38",
+    "message": "Building the site, should be kewl"
+}'
+```
 
 ### Installing
 
@@ -99,7 +123,7 @@ docker run -p 5000:9229 cloudstack-elasticsearch
 
 ### Accessing the end points
 
-1 . To search all the logs in the index navigate to 
+1 . To search all the logs in the index navigate to
 ```http request
 http://localhost:9229/api/v1/search/listall
 ```
@@ -127,6 +151,11 @@ http://localhost:9229/api/v1/search/query/<query string>
 4 . To display all indices, navigate to
 ```http request
 http://localhost:9229/api/v1/index
+```
+
+5. If you want to search for documents in different index then you can update the index dynamically using
+```
+http://localhost:9229/api/v1/config/updateindex/{name}
 ```
 
 ## Automating the generation of the docker images

@@ -15,7 +15,7 @@
     <description>Java web application to search logs from Elasticsearch</description>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <elasticsearch.version>6.8.3</elasticsearch.version>
     </properties>
 

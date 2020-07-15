@@ -45,10 +45,14 @@ public class ElasticSearchServiceImpl implements ElasticSearchService{
         String indexName = elasticConfig.getIndexName();
         String typeName = elasticConfig.getType();
         int querySize = elasticConfig.getQuerySize();
+        String sortField = elasticConfig.getSortField();
+        SortOrder sortOrder = elasticConfig.isDescending() ? SortOrder.DESC : SortOrder.ASC;
+
         SearchRequest searchRequest = buildSearchRequest(indexName, typeName);
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.matchAllQuery());
         searchSourceBuilder.size(querySize);
+        searchSourceBuilder.sort(new FieldSortBuilder(sortField).order(sortOrder));
         searchRequest.source(searchSourceBuilder);
 
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
@@ -95,7 +99,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService{
     private SearchRequest buildSearchRequest(String index, String type) {
         SearchRequest searchRequest = new SearchRequest();
         searchRequest.indices(index);
-        searchRequest.types(type);
+//        searchRequest.types(type);
 
         return searchRequest;
     }

@@ -2,7 +2,6 @@ package com.rakeshv.cloudstackelasticsearch.controllers;
 
 import com.rakeshv.cloudstackelasticsearch.model.ElasticConfig;
 import com.rakeshv.cloudstackelasticsearch.service.ElasticConfigServiceImpl;
-import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/config")
@@ -38,5 +39,13 @@ public class ElasticConfigController {
         elasticConfigService.saveElasticConfig(elasticConfig);
 
         return ResponseEntity.ok("Index updated successfully");
+    }
+
+    @GetMapping("/update/querysize/{value}")
+    public ResponseEntity<String> changeQuerySize(@PathVariable("value") int value) {
+        ElasticConfig elasticConfig = elasticConfigService.getElasticConfig();
+        elasticConfig.setQuerySize(value);
+        elasticConfigService.saveElasticConfig(elasticConfig);
+        return ResponseEntity.ok("Query size changed to " + value);
     }
 }
