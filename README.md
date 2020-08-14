@@ -99,7 +99,7 @@ $ curl <IP of elasticsearch>:9200/filebeat-2019.10.11/_mapping?pretty
 
 3 . Now that we know the name of index and the type name, store those values in ```data.sql```
 
-4. If you want to customize the index name, query size, type of log then configure it in `application.properties`
+4. If you want to customize the index name, query size, type of log then configure it in `data.sql`
 
 ### Building the packages
 
