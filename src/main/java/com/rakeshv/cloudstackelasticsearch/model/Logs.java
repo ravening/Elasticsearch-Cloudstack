@@ -13,8 +13,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Logs {
-    private String user;
-    private String message;
-    private String post_date;
-//    private Host host;
+    private String username;
+    private String description;
+    private String platform;
+    private String timestamp;
+    private String domain;
+    private String type;
 }
