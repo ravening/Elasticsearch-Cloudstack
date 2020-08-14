@@ -14,6 +14,7 @@ Below are the softwares that needs to be installed as a dependency
 ```
 Java 8
 Maven
+Running ElasticSearch Cluster
 ```
 
 ### Assumptions
@@ -21,7 +22,9 @@ Maven
 It is assumed that elasticsearch is installed and configured on either remote or local machine\
 from where we want to fetch the data.
 
-If elasticsearch is not installed then you follow the steps mentioned\
+If you want to run elasticsearch in docker then use the docker compose file from [here](https://github.com/ravening/dev_setup/blob/master/elasticsearch/docker-compose.yml)
+
+If you want to run elasticsearch on a baremetal machine or VM then you follow the steps mentioned\
 [here](https://www.digitalocean.com/community/tutorials/how-to-install-elasticsearch-logstash-and-kibana-elastic-stack-on-ubuntu-18-04)
 
 Once everything is setup, make sure that you can reach the elasticsearch endpoint by making a get request to
@@ -80,12 +83,7 @@ A step by step series of examples that tell you how to get a development env run
 
 1 . Git clone the repo to any Linux machine.
 
-2 . Make sure that the elasticsearch version you have installed matches with the one mentioned in ```application.properties```
-```java
-<elasticsearch.version>6.8.3</elasticsearch.version>
-```
-
-3 . Get the index name and the type of the document you want to fetch from the elasticsearch
+2 . Get the index name and the type of the document you want to fetch from the elasticsearch
 ```bash
 $ curl <IP of elasticsearch>:9200/_cat/indices?pretty
 yellow open filebeat-2019.10.11             ZbB6mlWBTb6QfKfPRfX2lw 5 1 1737458   0 550.5mb 550.5mb
@@ -98,8 +96,10 @@ $ curl <IP of elasticsearch>:9200/filebeat-2019.10.11/_mapping?pretty
     "mappings" : {
       "doc"
 ```
-4 . Now that we know the name of index and the type name, store those values in ```application.properties```
 
+3 . Now that we know the name of index and the type name, store those values in ```data.sql```
+
+4. If you want to customize the index name, query size, type of log then configure it in `application.properties`
 
 ### Building the packages
 
